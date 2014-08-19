@@ -52,7 +52,6 @@
             this.drawHiddenHitboxesCheckBox = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tmrSpawnObstacle = new System.Windows.Forms.Timer(this.components);
-            this.tmrTransform = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -233,11 +232,6 @@
             this.tmrSpawnObstacle.Interval = 2000;
             this.tmrSpawnObstacle.Tick += new System.EventHandler(this.tmrSpawnObstacle_Tick);
             // 
-            // tmrTransform
-            // 
-            this.tmrTransform.Interval = 10000;
-            this.tmrTransform.Tick += new System.EventHandler(this.tmrTransform_Tick);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,7 +272,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
         private System.Windows.Forms.ToolStripStatusLabel txtLives;
-        private System.Windows.Forms.Timer tmrTransform;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem easyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EasyModeCheckBox;

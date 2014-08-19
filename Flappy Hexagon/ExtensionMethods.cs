@@ -8,16 +8,14 @@ using NAudio.Wave;
 
 namespace Flappy_Hexagon
 {
+    //Extension methods for certain utility functions
     public static class ExtensionMethods
     {
         public static Dictionary<string,IWavePlayer> NowPlaying=new Dictionary<string,IWavePlayer>();
         public static void SetDoubleBuffered(this System.Windows.Forms.Control c)
         {
-            //Taxes: Remote Desktop Connection and painting
-            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
-            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
-                return;
-
+            //sets the specified form control to double buffer, by setting its DoubleBuffered flag
+            //disclaimer: code by Ian Boyd on StackOverflow here: http://stackoverflow.com/questions/76993/how-to-double-buffer-net-controls-on-a-form
             System.Reflection.PropertyInfo aProp =
                   typeof(System.Windows.Forms.Control).GetProperty(
                         "DoubleBuffered",
@@ -26,14 +24,10 @@ namespace Flappy_Hexagon
 
             aProp.SetValue(c, true, null);
         }
-        public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
-        {
-            if (val.CompareTo(min) < 0) return min;
-            else if (val.CompareTo(max) > 0) return max;
-            else return val;
-        }
+
         public static Bitmap rotateImage(this Bitmap i, float angle)
         {
+            //rotate an image about its center by translating it, rotating it, then translating it back
             Bitmap b = new Bitmap(i.Width, i.Height);
             Graphics g = Graphics.FromImage(b);
             g.SetShittyQuality();
@@ -45,12 +39,14 @@ namespace Flappy_Hexagon
         }
         public static void PlaySound(this System.IO.UnmanagedMemoryStream sound, string name = "")
         {
+            //create a WaveStream using the NAudio library to play the specified sound in the background (without interrupting normal program flow)
             IWavePlayer waveOutDevice = new WaveOut();
             WaveStream wmaReader = new WaveFileReader(sound);
             WaveChannel32 volumeStream = new WaveChannel32(wmaReader);
             WaveStream outputStream = volumeStream;
             waveOutDevice.Init(outputStream);
             waveOutDevice.Play();
+            //if a sound of the specified name is already playing, then stop it and play it from the start
             if (name.Length > 0)
             {
                 if (NowPlaying.ContainsKey(name))
@@ -65,6 +61,7 @@ namespace Flappy_Hexagon
         }
         public static void SetShittyQuality(this Graphics g)
         {
+            //set the specified GDI drawing surface to use faster rendering methods
             g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
             g.CompositingQuality = CompositingQuality.HighSpeed;

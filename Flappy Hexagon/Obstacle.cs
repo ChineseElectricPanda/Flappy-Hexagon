@@ -19,6 +19,7 @@ namespace Flappy_Hexagon
 
         public Obstacle(int x)
         {
+            //randomise the sides of the obstacle when it is created
             sides = new RectangleF[2];
             sides[0] = new RectangleF(x, -1000, width, 1000 + r.Next(padding, (Form1.internalHeight < Form1.internalWidth ? Form1.internalHeight : Form1.internalWidth - maxHeight - padding)));
             sides[1] = new RectangleF(x, sides[0].Y + sides[0].Height + r.Next(minHeight, maxHeight), width, 1000);
@@ -26,6 +27,7 @@ namespace Flappy_Hexagon
         }
         public void draw(Graphics g)
         {
+            //draw the obstacle
             Brush b=new SolidBrush(obstacleColor);
             g.FillRectangles(b, sides);
             b.Dispose();
@@ -34,6 +36,7 @@ namespace Flappy_Hexagon
         }
         public void step()
         {
+            //scroll the obstacle towards the other side of the screen
             sides[0].X += scrollSpeed;
             sides[1].X += scrollSpeed;
             gap.X += scrollSpeed;

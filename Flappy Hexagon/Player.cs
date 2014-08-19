@@ -23,12 +23,16 @@ namespace Flappy_Hexagon
 
         public Player(float x, float y)
         {
+            //change the obstacle and background colors to correspond with the current player shape
             Obstacle.obstacleColor = Form1.obstacleColors[sides - 1];
             Form1.GamePanel.BackColor = Form1.bgColors[sides - 1];
             rotation -= 360 / sides;
+            //set the player's x and y position
             xOffset = x - width * 2;
             yOffset = y - width *2;
+            //create the player's hitbox at the specified location
             rectangle = new RectangleF(x - width / 2, y - width / 2, width, height);
+            //set the points of the corners of the player for each shape
             line = new[]{
                 new PointF(width/2-2,0),
                 new PointF(width/2+2,0),
@@ -67,17 +71,18 @@ namespace Flappy_Hexagon
         {
             if (!Form1.drawGameOverScreen)
             {
+                //create a new bitmap to draw the player to
                 Bitmap b = new Bitmap(width * 4, height * 4);
                 Graphics bg = Graphics.FromImage(b);
+                //use fast rendering to improve framerate
                 bg.SetShittyQuality();
-                //bg.DrawRectangle(new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.YellowGreen)), 0, 0, b.Width-1 , b.Height-1);
                 bg.TranslateTransform(b.Width / 2 - width / 2, b.Height / 2 - height / 2);
-                //RotateTransform r = new RotateTransform(Form1.rotationAngle, b.Width / 2, b.Height / 2);
+                //create a brush to fill the player shape with
                 SolidBrush brush = new SolidBrush(playerColor);
+                //draw the player's shape to the bitmap
                 switch (sides)
                 {
                     case 1:
-                        //bg.FillEllipse(brush, rectangle);
                         bg.FillEllipse(brush, 0, 0, width, height);
                         break;
                     case 2:
@@ -96,15 +101,19 @@ namespace Flappy_Hexagon
                         bg.FillPolygon(brush, hexagon);
                         break;
                 }
+                //dispose the brush to free up memory
                 brush.Dispose();
+                //draw the player's hitbox if the setting is on
                 if(Form1.drawHitboxes)
                     g.FillRectangle(new SolidBrush(System.Drawing.Color.Red), rectangle);
+                //draw the player bitmap to the game panel, rotated by a certain amount
                 g.DrawImage(b.rotateImage(rotation), new PointF(xOffset, yOffset));
             }
         }
 
         public void step()
         {
+            //rotate the player if they recently jumped
             if (isRotating && Math.Abs(degreesToRotate) <= Math.Abs(rotationSpeed))
             {
                 rotation -= degreesToRotate;
@@ -117,12 +126,16 @@ namespace Flappy_Hexagon
                 degreesToRotate -= rotationSpeed;
             }
             Form1.rotationSegments = -360/sides;
+            //make the player accelerate downwards if their position is not forced frozen
             if(!freezePosition)
                 speed += gravity;
+            //check the player's downwards velocity is below the terminal velocity
             if (speed > terminalVelocity)
                 speed = terminalVelocity;
+            //move the player vertically depending on the vertical velocity
             yOffset += speed;
             rectangle.Location = new PointF(xOffset + width*1.5f, yOffset+height*1.5f);
+            //if the player is a circle, the game infinitely spins
             if (sides == 1)
             {
                 Form1.degreesToRotate = 99999;
@@ -132,6 +145,7 @@ namespace Flappy_Hexagon
         }
         public void transform()
         {
+            //transform the player to a polygon with one less side then speak the name of the shape
             if (sides > 1)
             {
                 sides--;
@@ -157,11 +171,13 @@ namespace Flappy_Hexagon
                         break;
                 }
             }
+            //change the obstacle and background colors to correspond with the current player shape
             Obstacle.obstacleColor = Form1.obstacleColors[sides - 1];
             Form1.GamePanel.BackColor = Form1.bgColors[sides - 1];
         }
         public void jump()
         {
+            //set the player's vertical speed to a certain value to jump
             if(!freezePosition)
                 speed = jumpForce;
             
