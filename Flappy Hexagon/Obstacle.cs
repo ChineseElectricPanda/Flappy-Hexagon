@@ -9,7 +9,7 @@ namespace Flappy_Hexagon
     public class Obstacle
     {
         public static float scrollSpeed = -7;
-        public static int minHeight = 125, maxHeight = 150, width = 50, padding=100;
+        public static int minHeight = 150, maxHeight = 175, width = 50, padding=100;
         public static Random r = new Random();
         public static Color obstacleColor = Color.Black;
 

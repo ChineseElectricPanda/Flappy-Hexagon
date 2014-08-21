@@ -50,6 +50,7 @@
             this.NormalModeCheckBox = new System.Windows.Forms.ToolStripMenuItem();
             this.infiniteLivesCheckBox = new System.Windows.Forms.ToolStripMenuItem();
             this.drawHiddenHitboxesCheckBox = new System.Windows.Forms.ToolStripMenuItem();
+            this.classicModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tmrSpawnObstacle = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
@@ -174,7 +175,8 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.easyToolStripMenuItem,
             this.infiniteLivesCheckBox,
-            this.drawHiddenHitboxesCheckBox});
+            this.drawHiddenHitboxesCheckBox,
+            this.classicModeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -219,6 +221,16 @@
             this.drawHiddenHitboxesCheckBox.Size = new System.Drawing.Size(192, 22);
             this.drawHiddenHitboxesCheckBox.Text = "Draw Hidden Hitboxes";
             this.drawHiddenHitboxesCheckBox.Click += new System.EventHandler(this.drawHiddenHitboxesCheckBox_Click);
+            // 
+            // classicModeToolStripMenuItem
+            // 
+            this.classicModeToolStripMenuItem.Checked = true;
+            this.classicModeToolStripMenuItem.CheckOnClick = true;
+            this.classicModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.classicModeToolStripMenuItem.Name = "classicModeToolStripMenuItem";
+            this.classicModeToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.classicModeToolStripMenuItem.Text = "Classic Mode";
+            this.classicModeToolStripMenuItem.Click += new System.EventHandler(this.classicModeToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -278,6 +290,7 @@
         private System.Windows.Forms.ToolStripMenuItem NormalModeCheckBox;
         private System.Windows.Forms.ToolStripMenuItem infiniteLivesCheckBox;
         private System.Windows.Forms.ToolStripMenuItem drawHiddenHitboxesCheckBox;
+        private System.Windows.Forms.ToolStripMenuItem classicModeToolStripMenuItem;
     }
 }
 

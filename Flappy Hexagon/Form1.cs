@@ -22,9 +22,9 @@ namespace Flappy_Hexagon
     {
         public const int initialLives = 1, internalWidth = 800, internalHeight = 800;
         DateTime previousFrameTime = DateTime.Now;
-        public static int frame = 0, score = 0, lives = 100;
+        public static int frame = 0, score = 0;
         public static float rotationAngle = 0, rotationSpeed = -10, rotationSegments = -90, degreesToRotate = 0;
-        public static bool isRotating = false, started = false, easyMode = false, jumpQueued=false, drawGameOverScreen=false, drawHitboxes=false, infiniteLives=false;
+        public static bool isRotating = false, started = false, easyMode = false, jumpQueued = false, drawGameOverScreen = false, drawHitboxes = false, infiniteLives = false, classicMode = true;
         public static Panel GamePanel;
         public static List<Obstacle> obstacles = new List<Obstacle>();
         public static Player player;
@@ -37,7 +37,7 @@ namespace Flappy_Hexagon
             System.Drawing.Color.FromArgb(191, 37, 44),
             System.Drawing.Color.FromArgb(244, 121, 63),
             System.Drawing.Color.FromArgb(244, 226, 63)};
-        public static System.Drawing.Color[] obstacleColors=new[]{
+        public static System.Drawing.Color[] obstacleColors = new[]{
             System.Drawing.Color.FromArgb(48, 166, 29), 
             System.Drawing.Color.FromArgb(57, 63, 161), 
             System.Drawing.Color.FromArgb(161, 57, 123), 
@@ -130,7 +130,6 @@ namespace Flappy_Hexagon
             rotationAngle = 0;
             degreesToRotate = 0;
             rotationSpeed = -10;
-            lives = infiniteLives ? 99999999 : initialLives;
 
             drawGameOverScreen = false;
 
@@ -241,13 +240,16 @@ namespace Flappy_Hexagon
                     {
                         if (obstacle.sides[i].IntersectsWith(player.rectangle))
                         {
-                            //if the player has collided with the side of an obstacle, decrement number of lives
-                            lives--;
-                            txtLives.Text = lives.ToString();
-                            obstacle.collided = true;
-                            //if the player reaches 0 lives, then it is game over
-                            if (lives == 0)
+                            if (classicMode && !infiniteLives)
                                 gameOver();
+                            else
+                            {
+                                if (player.sides == 1)
+                                    gameOver();
+                                else
+                                    player.transform();
+                            }
+                            obstacle.collided = true;
                         }
                     }
                 }
@@ -259,7 +261,7 @@ namespace Flappy_Hexagon
                         obstacle.scored = true;
                         score++;
                         //every 5 points the player scores, they transform into a different polygon
-                        if (score % 5 == 0)
+                        if (score % 5 == 0 && classicMode)
                             player.transform();
                     }
                 }
@@ -327,6 +329,12 @@ namespace Flappy_Hexagon
         {
             //toggle drawing of hitboxes upon clicking Draw Hidden Hitboxes
             drawHitboxes = drawHiddenHitboxesCheckBox.Checked;
+        }
+
+        private void classicModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //toggle classic mode
+            classicMode = !classicMode;
         }
 
         
