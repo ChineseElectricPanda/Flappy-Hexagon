@@ -54,7 +54,7 @@ namespace Flappy_Hexagon
             //resize the gamepanel to fill the screen
             pnlGame.Location = new Point(0, menuStrip.Height);
             pnlGame.Width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-            pnlGame.Height = Screen.PrimaryScreen.Bounds.Height-menuStrip.Height-statusStrip.Height;
+            pnlGame.Height = Screen.PrimaryScreen.Bounds.Height - menuStrip.Height;
             //set the game panel to double buffered to eliminate flickering
             pnlGame.SetDoubleBuffered();
             //create a static reference to the game panel so it can be accessed elsewhere
@@ -105,14 +105,16 @@ namespace Flappy_Hexagon
             TimeSpan difference = now - previousFrameTime;
             previousFrameTime = now;
             frame++;
-            //display the framerate in the statusStrip
-            try
-            {
-                txtFPSDisplay.Text = (1000f / (float)difference.Milliseconds).ToString().Substring(0, 4) + "(" + difference.Milliseconds.ToString() + "ms)";
-            }
-            catch
-            { }
-            txtFrameCounter.Text = frame.ToString();
+            ////display the framerate in the statusStrip
+            //try
+            //{
+            //    txtFPSDisplay.Text = (1000f / (float)difference.Milliseconds).ToString().Substring(0, 4) + "(" + difference.Milliseconds.ToString() + "ms)";
+            //}
+            //catch
+            //{ }
+            //txtFrameCounter.Text = frame.ToString();
+            //DO NOT REMOVE THIS OR YOUR MEMORY WILL LEAK WITH THE FORCE OF A THOUSAND HOLES
+            menuStrip.Refresh();
             //force a redraw of the game panel
             pnlGame.Refresh();
         }
@@ -170,6 +172,7 @@ namespace Flappy_Hexagon
                     ExtensionMethods.NowPlaying["BGM"].Dispose();
                 } 
             }
+
         }
 
         private void pnlGame_Paint(object sender, PaintEventArgs e)
@@ -329,17 +332,17 @@ namespace Flappy_Hexagon
             }
         }
 
-        private void infiniteLivesCheckBox_Click(object sender, EventArgs e)
-        {
-            //toggle infiniteLives mode upon clicking Infinite Lives
-            infiniteLives = infiniteLivesCheckBox.Checked;
-        }
+        //private void infiniteLivesCheckBox_Click(object sender, EventArgs e)
+        //{
+        //    //toggle infiniteLives mode upon clicking Infinite Lives
+        //    infiniteLives = infiniteLivesCheckBox.Checked;
+        //}
 
-        private void drawHiddenHitboxesCheckBox_Click(object sender, EventArgs e)
-        {
-            //toggle drawing of hitboxes upon clicking Draw Hidden Hitboxes
-            drawHitboxes = drawHiddenHitboxesCheckBox.Checked;
-        }
+        //private void drawHiddenHitboxesCheckBox_Click(object sender, EventArgs e)
+        //{
+        //    //toggle drawing of hitboxes upon clicking Draw Hidden Hitboxes
+        //    drawHitboxes = drawHiddenHitboxesCheckBox.Checked;
+        //}
 
         private void classicModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
