@@ -35,6 +35,7 @@ namespace Flappy_Hexagon
             g.RotateTransform(angle);
             g.TranslateTransform(-(float)b.Width / 2, -(float)b.Height / 2);
             g.DrawImage(i, new Point(0, 0));
+            g.Dispose();
             return b;
         }
         public static void PlaySound(this System.IO.UnmanagedMemoryStream sound, string name = "")
@@ -46,7 +47,7 @@ namespace Flappy_Hexagon
             WaveStream outputStream = volumeStream;
             waveOutDevice.Init(outputStream);
             waveOutDevice.Play();
-            //if a sound of the specified name is already playing, then stop it and play it from the start
+            //if a sound of the specified name is already playing, then stop it and play it from the start, otherwise, add it to the list of playing sounds
             if (name.Length > 0)
             {
                 if (NowPlaying.ContainsKey(name))

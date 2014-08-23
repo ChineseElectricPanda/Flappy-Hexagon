@@ -108,6 +108,9 @@ namespace Flappy_Hexagon
                     g.FillRectangle(new SolidBrush(System.Drawing.Color.Red), rectangle);
                 //draw the player bitmap to the game panel, rotated by a certain amount
                 g.DrawImage(b.rotateImage(rotation), new PointF(xOffset, yOffset));
+                //dispose the bitmap to free up memory
+                bg.Dispose();
+                b.Dispose();
             }
         }
 

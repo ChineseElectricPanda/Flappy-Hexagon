@@ -124,6 +124,7 @@ namespace Flappy_Hexagon
         private void loadLevel()
         {
             //reset all game variables
+            frame = 0;
             score = 0;
             player = new Player(internalWidth / 2, internalHeight / 2);
             rotationSegments = -360 / player.sides;
@@ -133,6 +134,8 @@ namespace Flappy_Hexagon
 
             drawGameOverScreen = false;
 
+            player.jump();
+            isRotating = true;
             player.isRotating = true;
             player.degreesToRotate = rotationSegments;
 
@@ -150,17 +153,23 @@ namespace Flappy_Hexagon
 
         private void gameOver()
         {
-            //when the game ends, stop the movement timer
-            tmrStep.Enabled = false;
-            tmrSpawnObstacle.Enabled = false;
-            started = false;
-            //tell the game to draw the game over screen
-            drawGameOverScreen = true;
-            //play the death sound
-            Properties.Resources.die.PlaySound();
-            //stop the BGM if it is playing
-            if(ExtensionMethods.NowPlaying.ContainsKey("BGM"))
-                ExtensionMethods.NowPlaying["BGM"].Stop();
+            if (!infiniteLives)
+            {
+                //when the game ends, stop the movement timer
+                tmrStep.Enabled = false;
+                tmrSpawnObstacle.Enabled = false;
+                started = false;
+                //tell the game to draw the game over screen
+                drawGameOverScreen = true;
+                //play the death sound
+                Properties.Resources.die.PlaySound();
+                //stop the BGM if it is playing
+                if (ExtensionMethods.NowPlaying.ContainsKey("BGM"))
+                {
+                    ExtensionMethods.NowPlaying["BGM"].Stop();
+                    ExtensionMethods.NowPlaying["BGM"].Dispose();
+                } 
+            }
         }
 
         private void pnlGame_Paint(object sender, PaintEventArgs e)
@@ -195,11 +204,13 @@ namespace Flappy_Hexagon
             }
             //draw the score at the upper middle of the screen
             SolidBrush fillBrush = drawGameOverScreen ? new SolidBrush(System.Drawing.Color.White) : new SolidBrush(System.Drawing.Color.Black);
-            e.Graphics.DrawString(score.ToString(), font, fillBrush, internalWidth / 2 - 20, 100);
-            //dispose of the font and brushes to free up memory
+            e.Graphics.DrawString(score.ToString(), font, fillBrush, pnlGame.Width / 2 - 20, 100);
+            //dispose of the font and brushes and bitmaps to free up memory
             b.Dispose();
             font.Dispose();
             fillBrush.Dispose();
+            if(started)
+                g.Dispose();
         }
 
         private void tmrSpawnObstacle_Tick(object sender, EventArgs e)
@@ -215,15 +226,14 @@ namespace Flappy_Hexagon
             {
                 if (started)
                 {
-                    if (isRotating && player.sides!=1)
-                        jumpQueued = true;
-                    else
+                    if (frame > 7)
+                    {
                         player.jump();
-                    isRotating = true;
-                    degreesToRotate = rotationSegments;
-                    player.isRotating = true;
-                    player.degreesToRotate = rotationSegments;
-                    
+                        isRotating = true;
+                        degreesToRotate = rotationSegments;
+                        player.isRotating = true;
+                        player.degreesToRotate = rotationSegments;
+                    }
                 }
                 else
                     loadLevel();
@@ -240,7 +250,7 @@ namespace Flappy_Hexagon
                     {
                         if (obstacle.sides[i].IntersectsWith(player.rectangle))
                         {
-                            if (classicMode && !infiniteLives)
+                            if (classicMode)
                                 gameOver();
                             else
                             {
