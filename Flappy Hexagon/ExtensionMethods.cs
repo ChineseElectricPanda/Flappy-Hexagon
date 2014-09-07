@@ -30,7 +30,7 @@ namespace Flappy_Hexagon
             //rotate an image about its center by translating it, rotating it, then translating it back
             Bitmap b = new Bitmap(i.Width, i.Height);
             Graphics g = Graphics.FromImage(b);
-            g.SetShittyQuality();
+            g.SetFastRendering();
             g.TranslateTransform((float)b.Width / 2, (float)b.Height / 2);
             g.RotateTransform(angle);
             g.TranslateTransform(-(float)b.Width / 2, -(float)b.Height / 2);
@@ -60,7 +60,7 @@ namespace Flappy_Hexagon
                     NowPlaying.Add(name, waveOutDevice);
             }
         }
-        public static void SetShittyQuality(this Graphics g)
+        public static void SetFastRendering(this Graphics g)
         {
             //set the specified GDI drawing surface to use faster rendering methods
             g.PixelOffsetMode = PixelOffsetMode.HighSpeed;

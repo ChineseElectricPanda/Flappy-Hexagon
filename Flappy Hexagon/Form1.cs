@@ -9,17 +9,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Media;
-//using NAudio;
 using NAudio.Wave;
-//using NAudio.CoreAudioApi;
-//using NAudio.Midi;
 
-//time spent so far : ~6h
-//TODO: Add highscores
 namespace Flappy_Hexagon
 {
     public partial class Form1 : Form
     {
+        //variables...details can be found in the variable table
         public const int initialLives = 1, internalWidth = 800, internalHeight = 800;
         DateTime previousFrameTime = DateTime.Now;
         public static int frame = 0, score = 0;
@@ -47,6 +43,7 @@ namespace Flappy_Hexagon
 
         public Form1()
         {
+            //initialize the form
             InitializeComponent();
             //maximise the window and set it to borderless for pseudo-fullscreen mode
             FormBorderStyle = FormBorderStyle.None;
@@ -105,15 +102,7 @@ namespace Flappy_Hexagon
             TimeSpan difference = now - previousFrameTime;
             previousFrameTime = now;
             frame++;
-            ////display the framerate in the statusStrip
-            //try
-            //{
-            //    txtFPSDisplay.Text = (1000f / (float)difference.Milliseconds).ToString().Substring(0, 4) + "(" + difference.Milliseconds.ToString() + "ms)";
-            //}
-            //catch
-            //{ }
-            //txtFrameCounter.Text = frame.ToString();
-            //DO NOT REMOVE THIS OR YOUR MEMORY WILL LEAK WITH THE FORCE OF A THOUSAND HOLES
+            //force a redraw of the form objects
             menuStrip.Refresh();
             //force a redraw of the game panel
             pnlGame.Refresh();
@@ -178,12 +167,12 @@ namespace Flappy_Hexagon
         private void pnlGame_Paint(object sender, PaintEventArgs e)
         {
             //set the gamepanel to fast drawing mode
-            e.Graphics.SetShittyQuality();
+            e.Graphics.SetFastRendering();
             //create a new bitmap to draw to
             Bitmap b = new Bitmap(internalWidth > internalHeight ? internalWidth : internalHeight, internalWidth > internalHeight ? internalWidth : internalHeight);
             Graphics g = Graphics.FromImage(b);
             //set the bitmap to fast drawing mode
-            g.SetShittyQuality();
+            g.SetFastRendering();
             //draw the obstacles
             foreach (Obstacle obstacle in obstacles)
             {
@@ -304,12 +293,6 @@ namespace Flappy_Hexagon
             Application.Exit();
         }
 
-        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //restart the whole application (hard reset) upon clicking Restart
-            Application.Restart();
-        }
-
         private void NormalModeCheckBox_Click(object sender, EventArgs e)
         {
             //unset easyMode if the player checks Normal Mode
@@ -331,18 +314,6 @@ namespace Flappy_Hexagon
                 NormalModeCheckBox.Checked = false;
             }
         }
-
-        //private void infiniteLivesCheckBox_Click(object sender, EventArgs e)
-        //{
-        //    //toggle infiniteLives mode upon clicking Infinite Lives
-        //    infiniteLives = infiniteLivesCheckBox.Checked;
-        //}
-
-        //private void drawHiddenHitboxesCheckBox_Click(object sender, EventArgs e)
-        //{
-        //    //toggle drawing of hitboxes upon clicking Draw Hidden Hitboxes
-        //    drawHitboxes = drawHiddenHitboxesCheckBox.Checked;
-        //}
 
         private void classicModeToolStripMenuItem_Click(object sender, EventArgs e)
         {

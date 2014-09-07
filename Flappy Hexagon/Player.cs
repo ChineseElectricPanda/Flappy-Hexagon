@@ -75,7 +75,7 @@ namespace Flappy_Hexagon
                 Bitmap b = new Bitmap(width * 4, height * 4);
                 Graphics bg = Graphics.FromImage(b);
                 //use fast rendering to improve framerate
-                bg.SetShittyQuality();
+                bg.SetFastRendering();
                 bg.TranslateTransform(b.Width / 2 - width / 2, b.Height / 2 - height / 2);
                 //create a brush to fill the player shape with
                 SolidBrush brush = new SolidBrush(playerColor);
