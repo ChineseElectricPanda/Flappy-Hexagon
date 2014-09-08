@@ -16,11 +16,10 @@ namespace Flappy_Hexagon
     public partial class Form1 : Form
     {
         //variables...details can be found in the variable table
-        public const int initialLives = 1, internalWidth = 800, internalHeight = 800;
-        DateTime previousFrameTime = DateTime.Now;
+		public const int initialLives = 1, internalResolution = 800;
         public static int frame = 0, score = 0;
-        public static float rotationAngle = 0, rotationSpeed = -10, rotationSegments = -90, degreesToRotate = 0;
-        public static bool isRotating = false, started = false, easyMode = false, jumpQueued = false, drawGameOverScreen = false, drawHitboxes = false, infiniteLives = false, classicMode = true;
+        public static float rotationAngle = 0, rotationSpeed = -10, rotationSegments, degreesToRotate = 0;
+        public static bool isRotating = false, started = false, easyMode = false, drawGameOverScreen = false, classicMode = true;
         public static Panel GamePanel;
         public static List<Obstacle> obstacles = new List<Obstacle>();
         public static Player player;
@@ -45,19 +44,25 @@ namespace Flappy_Hexagon
         {
             //initialize the form
             InitializeComponent();
+
             //maximise the window and set it to borderless for pseudo-fullscreen mode
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
+
             //resize the gamepanel to fill the screen
             pnlGame.Location = new Point(0, menuStrip.Height);
             pnlGame.Width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
             pnlGame.Height = Screen.PrimaryScreen.Bounds.Height - menuStrip.Height;
+
             //set the game panel to double buffered to eliminate flickering
             pnlGame.SetDoubleBuffered();
+
             //create a static reference to the game panel so it can be accessed elsewhere
             GamePanel = pnlGame;
+
             //create a new player object
-            player = new Player(internalWidth / 2, internalHeight / 2);
+            player = new Player(internalResolution / 2, internalResolution / 2);
+
             //play a sound announcing the name of the game
             Properties.Resources.flappy_hexagon.PlaySound();
         }
@@ -89,21 +94,22 @@ namespace Flappy_Hexagon
             }
             //move the player
             player.step();
+
             //check for collisions between the player and any obstacles
             checkCollisions();
+
             //despawn any obstacles that have left the game area
             despawnObstacles();
         }
 
         private void tmrRedraw_Tick(object sender, EventArgs e)
         {
-            //calculate the time since the previous frame
-            DateTime now = DateTime.Now;
-            TimeSpan difference = now - previousFrameTime;
-            previousFrameTime = now;
+			//count up the number of frames
             frame++;
+
             //force a redraw of the form objects
             menuStrip.Refresh();
+
             //force a redraw of the game panel
             pnlGame.Refresh();
         }
@@ -117,7 +123,7 @@ namespace Flappy_Hexagon
             //reset all game variables
             frame = 0;
             score = 0;
-            player = new Player(internalWidth / 2, internalHeight / 2);
+            player = new Player(internalResolution / 2, internalResolution / 2);
             rotationSegments = -360 / player.sides;
             rotationAngle = 0;
             degreesToRotate = 0;
@@ -144,35 +150,39 @@ namespace Flappy_Hexagon
 
         private void gameOver()
         {
-            if (!infiniteLives)
-            {
-                //when the game ends, stop the movement timer
-                tmrStep.Enabled = false;
-                tmrSpawnObstacle.Enabled = false;
-                started = false;
-                //tell the game to draw the game over screen
-                drawGameOverScreen = true;
-                //play the death sound
-                Properties.Resources.die.PlaySound();
-                //stop the BGM if it is playing
-                if (ExtensionMethods.NowPlaying.ContainsKey("BGM"))
-                {
-                    ExtensionMethods.NowPlaying["BGM"].Stop();
-                    ExtensionMethods.NowPlaying["BGM"].Dispose();
-                } 
-            }
+            //when the game ends, stop the movement timer
+            tmrStep.Enabled = false;
+            tmrSpawnObstacle.Enabled = false;
+            started = false;
 
+            //tell the game to draw the game over screen
+            drawGameOverScreen = true;
+
+            //play the death sound
+            Properties.Resources.die.PlaySound();
+
+            //stop the BGM if it is playing
+            if (ExtensionMethods.NowPlaying.ContainsKey("BGM"))
+            {
+                ExtensionMethods.NowPlaying["BGM"].Stop();
+                ExtensionMethods.NowPlaying["BGM"].Dispose();
+            }
+            //stop the rotation (if any)
+            isRotating = false;
         }
 
         private void pnlGame_Paint(object sender, PaintEventArgs e)
         {
             //set the gamepanel to fast drawing mode
             e.Graphics.SetFastRendering();
+
             //create a new bitmap to draw to
-            Bitmap b = new Bitmap(internalWidth > internalHeight ? internalWidth : internalHeight, internalWidth > internalHeight ? internalWidth : internalHeight);
+            Bitmap b = new Bitmap(internalResolution, internalResolution);
             Graphics g = Graphics.FromImage(b);
+
             //set the bitmap to fast drawing mode
             g.SetFastRendering();
+
             //draw the obstacles
             foreach (Obstacle obstacle in obstacles)
             {
@@ -180,10 +190,13 @@ namespace Flappy_Hexagon
             }
             //draw the player
             player.draw(g);
+
             //draw the bitmap to the gamepanel, rotated by a certain amount
             e.Graphics.DrawImage(b.rotateImage(rotationAngle), pnlGame.DisplayRectangle);
+
             //create a new font for drawing the score and instructions
             System.Drawing.Font font = new System.Drawing.Font("Consolas", 50, FontStyle.Bold);
+
             if (!started)
             {
                 //if the game is not running, then draw a opaque black rectangle to fade the game out, then draw the "Press [Space]" prompt
@@ -197,6 +210,7 @@ namespace Flappy_Hexagon
             //draw the score at the upper middle of the screen
             SolidBrush fillBrush = drawGameOverScreen ? new SolidBrush(System.Drawing.Color.White) : new SolidBrush(System.Drawing.Color.Black);
             e.Graphics.DrawString(score.ToString(), font, fillBrush, pnlGame.Width / 2 - 20, 100);
+
             //dispose of the font and brushes and bitmaps to free up memory
             b.Dispose();
             font.Dispose();
@@ -208,7 +222,7 @@ namespace Flappy_Hexagon
         private void tmrSpawnObstacle_Tick(object sender, EventArgs e)
         {
             //create a new obstacle at regular intervals
-            obstacles.Add(new Obstacle(internalWidth>internalHeight?internalWidth:internalHeight));
+            obstacles.Add(new Obstacle(internalResolution));
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -259,9 +273,11 @@ namespace Flappy_Hexagon
                 {
                     if (player.rectangle.IntersectsWith(obstacle.gap))
                     {
-                        //if the player goes through the gap between the sides of an obstacle, then increment the score
+                        //if the player goes through the gap between the sides of an obstacle, then increment the score,
+						//and mark the obstacle as scored so the player cannot score off it again
                         obstacle.scored = true;
                         score++;
+
                         //every 5 points the player scores, they transform into a different polygon
                         if (score % 5 == 0 && classicMode)
                             player.transform();
@@ -317,7 +333,7 @@ namespace Flappy_Hexagon
 
         private void classicModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //toggle classic mode
+            //toggle classic mode upon clicking the checkbox
             classicMode = !classicMode;
         }
 

@@ -8,6 +8,7 @@ namespace Flappy_Hexagon
 {
     public class Obstacle
     {
+		//details of variables on variable table
         public static float scrollSpeed = -7;
         public static int minHeight = 150, maxHeight = 175, width = 50, padding=100;
         public static Random r = new Random();
@@ -21,8 +22,10 @@ namespace Flappy_Hexagon
         {
             //randomise the sides of the obstacle when it is created
             sides = new RectangleF[2];
-            sides[0] = new RectangleF(x, -1000, width, 1000 + r.Next(padding, (Form1.internalHeight < Form1.internalWidth ? Form1.internalHeight : Form1.internalWidth - maxHeight - padding)));
+            sides[0] = new RectangleF(x, -1000, width, 1000 + r.Next(padding, Form1.internalResolution - maxHeight - padding));
             sides[1] = new RectangleF(x, sides[0].Y + sides[0].Height + r.Next(minHeight, maxHeight), width, 1000);
+
+			//create a rectangle to represent the gap between the two sides of the obstacle
             gap = new RectangleF(x, sides[0].Y + sides[0].Height, width, sides[1].Y - sides[0].Y - sides[0].Height);
         }
         public void draw(Graphics g)
@@ -31,8 +34,6 @@ namespace Flappy_Hexagon
             Brush b=new SolidBrush(obstacleColor);
             g.FillRectangles(b, sides);
             b.Dispose();
-            if(Form1.drawHitboxes)
-                g.FillRectangle(new SolidBrush(Color.Red), gap);
         }
         public void step()
         {

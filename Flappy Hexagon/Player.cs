@@ -9,6 +9,7 @@ namespace Flappy_Hexagon
 {
     public class Player
     {
+		//details of variables on variable table
         public static PointF[] line, triangle, rectanglePolygon, pentagon, hexagon, nanogon, octagon;
         public static int width=30, height=30;
         public static int maxSides = 8;
@@ -27,11 +28,14 @@ namespace Flappy_Hexagon
             Obstacle.obstacleColor = Form1.obstacleColors[sides - 1];
             Form1.GamePanel.BackColor = Form1.bgColors[sides - 1];
             rotation -= 360 / sides;
+
             //set the player's x and y position
             xOffset = x - width * 2;
             yOffset = y - width *2;
+
             //create the player's hitbox at the specified location
             rectangle = new RectangleF(x - width / 2, y - width / 2, width, height);
+
             //set the points of the corners of the player for each shape
             line = new[]{
                 new PointF(width/2-2,0),
@@ -69,16 +73,22 @@ namespace Flappy_Hexagon
         }
         public void draw(Graphics g)
         {
+			//draw the player if it isn't game over
             if (!Form1.drawGameOverScreen)
             {
                 //create a new bitmap to draw the player to
                 Bitmap b = new Bitmap(width * 4, height * 4);
                 Graphics bg = Graphics.FromImage(b);
+
                 //use fast rendering to improve framerate
                 bg.SetFastRendering();
+
+				//move the player image to the center of the bitmap
                 bg.TranslateTransform(b.Width / 2 - width / 2, b.Height / 2 - height / 2);
+
                 //create a brush to fill the player shape with
                 SolidBrush brush = new SolidBrush(playerColor);
+
                 //draw the player's shape to the bitmap
                 switch (sides)
                 {
@@ -103,11 +113,10 @@ namespace Flappy_Hexagon
                 }
                 //dispose the brush to free up memory
                 brush.Dispose();
-                //draw the player's hitbox if the setting is on
-                if(Form1.drawHitboxes)
-                    g.FillRectangle(new SolidBrush(System.Drawing.Color.Red), rectangle);
+
                 //draw the player bitmap to the game panel, rotated by a certain amount
                 g.DrawImage(b.rotateImage(rotation), new PointF(xOffset, yOffset));
+
                 //dispose the bitmap to free up memory
                 bg.Dispose();
                 b.Dispose();
@@ -129,15 +138,21 @@ namespace Flappy_Hexagon
                 degreesToRotate -= rotationSpeed;
             }
             Form1.rotationSegments = -360/sides;
+
             //make the player accelerate downwards if their position is not forced frozen
             if(!freezePosition)
                 speed += gravity;
+
             //check the player's downwards velocity is below the terminal velocity
             if (speed > terminalVelocity)
                 speed = terminalVelocity;
+
             //move the player vertically depending on the vertical velocity
             yOffset += speed;
+
+			//set the new location of the player
             rectangle.Location = new PointF(xOffset + width*1.5f, yOffset+height*1.5f);
+
             //if the player is a circle, the game infinitely spins
             if (sides == 1)
             {
