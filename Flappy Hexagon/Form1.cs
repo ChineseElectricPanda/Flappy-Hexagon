@@ -98,6 +98,10 @@ namespace Flappy_Hexagon
             //check for collisions between the player and any obstacles
             checkCollisions();
 
+			//kill the player if they move too far out of the game zone
+			if (player.rectangle.Y > internalResolution || player.rectangle.Y < -player.rectangle.Height)
+				gameOver();
+
             //despawn any obstacles that have left the game area
             despawnObstacles();
         }
